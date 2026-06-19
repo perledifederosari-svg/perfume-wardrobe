@@ -906,6 +906,7 @@ async function loadData() {
     const { data, error } = await db.from('perfumes').select('*').order('name');
     if (error) throw error;
     if (data && data.length > 0) {
+      // Supabase has data — always use it, never overwrite with defaults
       collection = data.map(row => ({
         _dbid: row.id,
         brand: row.brand || '',
@@ -923,20 +924,34 @@ async function loadData() {
         ref: row.ref || '',
         image: row.image || '',
       }));
+      // Cache to localStorage as backup
+      try { localStorage.setItem('wardrobe-collection', JSON.stringify(collection)); } catch {}
       showSyncStatus('✓ Synced');
     } else {
-      // First time — load defaults
-      collection = [...DEFAULT_DATA];
-      await saveData();
-      showSyncStatus('✓ Ready');
+      // Supabase is empty — check localStorage before using defaults
+      const local = localStorage.getItem('wardrobe-collection');
+      if (local) {
+        collection = JSON.parse(local);
+        showSyncStatus('✓ Loaded from cache');
+      } else {
+        // Truly first time — load sample data
+        collection = [...DEFAULT_DATA];
+        showSyncStatus('✓ Ready');
+      }
+      // Do NOT save to Supabase here — wait for user to explicitly import
     }
   } catch(e) {
-    showSyncStatus('⚠ Offline — using local');
-    // Fallback to localStorage
+    showSyncStatus('⚠ Offline — using cache');
+    // Supabase unavailable — use localStorage, never default
     try {
       const local = localStorage.getItem('wardrobe-collection');
-      collection = local ? JSON.parse(local) : [...DEFAULT_DATA];
-    } catch { collection = [...DEFAULT_DATA]; }
+      if (local) {
+        collection = JSON.parse(local);
+      } else {
+        collection = [];
+        showSyncStatus('⚠ No data found');
+      }
+    } catch { collection = []; }
   }
   render();
 }
