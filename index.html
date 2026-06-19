@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Perfume Wardrobe</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Wardrobe">
+<meta name="theme-color" content="#D4607A">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23D4607A'/><text y='.9em' font-size='80' x='10'>🌸</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --noir: #F5C8D8;
+  --noir-mid: #EDAFC4;
+  --noir-light: #E496B0;
+  --gold: #A8721E;
+  --gold-light: #C48C2A;
+  --parchment: #2A0A14;
+  --violet: #8A1A34;
+  --violet-light: #B02848;
+  --cream: #1A0008;
+  --muted: #7A3A50;
+  --success: #2A6A3A;
+  --danger: #8A1020;
+}
+
+body {
+  background: #D4607A;
+  color: var(--parchment);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* GOLD FRAME WRAPPER */
+body > * {
+  position: relative;
+}
+
+#app-frame {
+  border: 4px solid #A8721E;
+  box-shadow:
+    0 0 0 1px rgba(168,114,30,0.5),
+    0 0 0 7px #D4607A,
+    0 0 0 9px rgba(168,114,30,0.4),
+    0 12px 48px rgba(100,20,40,0.3);
+  min-height: calc(100vh - 40px);
+  background: var(--noir);
+  position: relative;
+  overflow: visible;
+}
+
+/* NAV */
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 2px solid var(--gold);
+  position: sticky;
+  top: 0;
+  background: #2A0A14;
+  backdrop-filter: blur(16px);
+  z-index: 200;
+  gap: 10px;
+  width: 100%;
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem;
+  font-weight: 200;
+  letter-spacing: 0.28em;
+  color: var(--gold);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.logo em { font-style: italic; font-weight: 200; color: #FAE8EE; }
+
+.nav-stats {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.stat-chip {
+  text-align: center;
+  line-height: 1.2;
+}
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  color: #FAE8EE;
+  display: block;
+}
+.stat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C8A0AE;
+}
+
+.btn-add {
+  background: var(--gold);
+  color: var(--noir);
+  border: none;
+  padding: 12px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.btn-add:hover { background: var(--gold-light); }
+
+/* FILTERS */
+.filters-bar {
+  padding: 16px 32px;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(168,114,30,0.2);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+}
+
+.search-input {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid rgba(168,114,30,0.3);
+  color: var(--parchment);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  padding: 9px 12px 9px 34px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus { border-color: var(--gold); }
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.filter-select {
+  background: #FFFFFF;
+  border: 1px solid rgba(168,114,30,0.3);
+  color: var(--parchment);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  padding: 9px 12px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-width: 130px;
+}
+.filter-select:focus { border-color: var(--gold); }
+.filter-select option { background: #FFFFFF; color: var(--parchment); }
+
+.view-toggle {
+  display: flex;
+  border: 1px solid rgba(201,169,110,0.2);
+}
+.view-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  padding: 9px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+}
+.view-btn.active { background: rgba(201,169,110,0.15); color: var(--gold); }
+
+/* MAIN */
+main { padding: 0; background: #F5C8D8; }
+
+/* GRID VIEW */
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2px;
+  padding: 2px;
+}
+
+.perf-card {
+  background: #FFFFFF;
+  padding: 22px 18px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  position: relative;
+  border-bottom: 2px solid transparent;
+}
+.perf-card:hover {
+  background: #FFF5F7;
+  transform: translateY(-2px);
+  border-bottom-color: var(--gold);
+}
+
+.perf-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+
+.card-swatch {
+  width: 100%;
+  height: 140px;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #FDF5F7;
+  border-radius: 4px;
+}
+
+.card-swatch img {
+  max-height: 130px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.card-swatch-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.card-brand {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.card-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  color: var(--cream);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.card-line {
+  font-size: 0.85rem;
+  color: var(--violet-light);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.card-shelf {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.card-profile {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--gold);
+}
+
+.wearability-badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border: 1px solid;
+}
+.wear-easy { color: var(--success); border-color: var(--success); }
+.wear-main { color: var(--gold); border-color: var(--gold); }
+
+.dup-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--violet-light);
+  border: 1px solid rgba(139,95,192,0.4);
+  padding: 2px 6px;
+  text-transform: uppercase;
+}
+
+/* LIST VIEW */
+.collection-list { display: none; }
+.collection-list.active { display: block; }
+.collection-grid.active { display: grid; }
+.collection-grid.hidden { display: none; }
+
+.list-header {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr 1.5fr 0.8fr 0.8fr 80px;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(168,114,30,0.2);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: #F5F5F5;
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr 1.5fr 0.8fr 0.8fr 80px;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(168,114,30,0.1);
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  background: #FFFFFF;
+}
+.list-row:hover { background: #FFF5F7; }
+
+.list-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--cream); }
+.list-brand { font-size: 0.78rem; color: var(--muted); }
+.list-price { font-size: 0.85rem; color: var(--gold); }
+.list-shelf { font-size: 0.72rem; color: var(--parchment); }
+.list-wear { font-size: 0.68rem; }
+.list-date { font-size: 0.7rem; color: var(--muted); }
+.list-actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+.btn-icon {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--muted);
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.btn-icon:hover { border-color: var(--gold); color: var(--gold); }
+.btn-icon.delete:hover { border-color: var(--danger); color: var(--danger); }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(80,10,30,0.6);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: #FFFFFF;
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 0 1px rgba(168,114,30,0.2), 0 20px 60px rgba(80,10,30,0.5);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 36px;
+  position: relative;
+  color: #2A0A14;
+}
+
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: var(--cream);
+  margin-bottom: 28px;
+}
+.modal-title em { font-style: italic; color: var(--gold); }
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--gold); }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.form-full { grid-column: 1 / -1; }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+.form-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.form-input, .form-select, .form-textarea {
+  background: #FDF5F7;
+  border: 1px solid rgba(168,114,30,0.3);
+  color: #2A0A14;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); }
+.form-select option { background: #FFFFFF; color: #2A0A14; }
+.form-textarea { resize: vertical; min-height: 70px; }
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(201,169,110,0.1);
+}
+
+.btn-cancel {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--parchment);
+  padding: 10px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.btn-cancel:hover { border-color: var(--muted); }
+
+.btn-save {
+  background: var(--gold);
+  color: var(--noir);
+  border: none;
+  padding: 10px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.btn-save:hover { background: var(--gold-light); }
+
+/* DETAIL MODAL */
+.detail-header {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.detail-swatch {
+  width: 100px;
+  height: 120px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #FDF5F7;
+}
+.detail-swatch img { max-height: 115px; max-width: 95px; object-fit: contain; }
+.detail-swatch-circle { width: 60px; height: 60px; border-radius: 50%; flex-shrink: 0; }
+.detail-brand { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.detail-name { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--cream); line-height: 1.1; }
+.detail-line { font-size: 0.8rem; color: var(--violet-light); font-style: italic; margin-top: 4px; }
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.detail-field { padding: 12px 16px; background: #FDF5F7; }
+.detail-field-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.detail-field-value { font-size: 0.88rem; color: #2A0A14; line-height: 1.4; }
+
+.detail-smells { padding: 14px 16px; background: #FDF0F5; border-left: 2px solid var(--violet); margin-bottom: 16px; }
+.detail-smells-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--violet-light); margin-bottom: 6px; }
+.detail-smells-value { font-size: 0.85rem; color: #2A0A14; line-height: 1.5; font-style: italic; }
+
+.detail-dup { padding: 10px 16px; background: #FDF8EE; border-left: 2px solid var(--gold); margin-bottom: 16px; }
+.detail-dup-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+.detail-dup-value { font-size: 0.82rem; color: #2A0A14; font-style: italic; }
+
+.detail-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(201,169,110,0.1); }
+
+/* IMPORT MODAL */
+.import-drop {
+  border: 2px dashed rgba(201,150,58,0.3);
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 20px;
+  position: relative;
+}
+.import-drop:hover, .import-drop.drag-over {
+  border-color: var(--gold);
+  background: rgba(201,150,58,0.05);
+}
+.import-drop input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.import-drop-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+.import-drop-label { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--cream); display: block; margin-bottom: 6px; }
+.import-drop-sub { font-size: 0.75rem; color: var(--muted); }
+
+.import-preview {
+  display: none;
+  margin-bottom: 20px;
+}
+.import-preview.visible { display: block; }
+
+.import-preview-title {
+  font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px;
+}
+
+.col-map-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.col-map-row { display: flex; flex-direction: column; gap: 4px; }
+.col-map-label { font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+
+.import-info {
+  background: rgba(107,63,160,0.1);
+  border-left: 2px solid var(--violet);
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  color: var(--parchment);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.import-options {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.import-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--parchment);
+  cursor: pointer;
+}
+.import-radio input { accent-color: var(--gold); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--noir-light);
+  border: 1px solid rgba(201,150,58,0.4);
+  color: var(--parchment);
+  padding: 12px 20px;
+  font-size: 0.82rem;
+  z-index: 999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* EMPTY */
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--muted);
+}
+.empty-state p { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-style: italic; margin-bottom: 12px; }
+.empty-state span { font-size: 0.8rem; }
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  nav { padding: 14px 16px; }
+  .nav-stats { gap: 14px; }
+  .stat-num { font-size: 1.1rem; }
+  main { padding: 16px; }
+  .filters-bar { padding: 12px 16px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .modal { padding: 24px 18px; }
+  .list-header, .list-row { grid-template-columns: 2fr 1fr 0.7fr 60px; }
+  .list-shelf, .list-wear, .list-date { display: none; }
+  .detail-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="app-frame">
+<nav>
+  <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;">
+    <div>
+      <div class="logo">My <em>Wardrobe</em></div>
+      <div id="syncStatus" style="font-size:0.6rem;letter-spacing:0.15em;color:#C8A0AE;transition:opacity 1s;opacity:0;margin-top:2px;"></div>
+    </div>
+    <div style="display:flex;gap:6px;flex-shrink:0;">
+      <button class="btn-add" style="background:transparent;color:#FAE8EE;border:2px solid #FAE8EE;padding:9px 16px;font-size:0.85rem;" onclick="openImportModal()">↑ Import</button>
+      <button class="btn-add" style="background:transparent;color:#FAE8EE;border:2px solid #FAE8EE;padding:9px 16px;font-size:0.85rem;" onclick="exportCSV()">↓ CSV</button>
+      <button class="btn-add" style="background:var(--gold);color:#fff;border:2px solid var(--gold);padding:9px 20px;font-size:0.85rem;" onclick="openAddModal()">+ Add</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:28px;width:100%;justify-content:center;padding-top:8px;border-top:1px solid rgba(201,150,58,0.3);margin-top:4px;">
+    <div class="stat-chip">
+      <span class="stat-num" id="statTotal">0</span>
+      <span class="stat-label">Bottles</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-num" id="statSpent">$0</span>
+      <span class="stat-label">Spent</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-num" id="statBrands">0</span>
+      <span class="stat-label">Brands</span>
+    </div>
+  </div>
+</nav>
+
+<div class="filters-bar">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input class="search-input" type="text" placeholder="Search by name, brand, notes…" id="searchInput" oninput="applyFilters()">
+  </div>
+  <select class="filter-select" id="filterBrand" onchange="applyFilters()">
+    <option value="">All Brands</option>
+  </select>
+  <select class="filter-select" id="filterShelf" onchange="applyFilters()">
+    <option value="">All Shelves</option>
+  </select>
+  <select class="filter-select" id="filterWear" onchange="applyFilters()">
+    <option value="">All Wearability</option>
+    <option value="Easy reach">Easy Reach</option>
+    <option value="Main character only">Main Character</option>
+  </select>
+  <select class="filter-select" id="filterVendor" onchange="applyFilters()">
+    <option value="">All Vendors</option>
+  </select>
+  <select class="filter-select" id="filterSort" onchange="applyFilters()" style="min-width:140px;">
+    <option value="name-az">Name A → Z</option>
+    <option value="name-za">Name Z → A</option>
+    <option value="brand-az">Brand A → Z</option>
+    <option value="date-new">Newest First</option>
+    <option value="date-old">Oldest First</option>
+    <option value="price-low">Price Low → High</option>
+    <option value="price-high">Price High → Low</option>
+  </select>
+  <div class="view-toggle">
+    <button class="view-btn active" id="btnGrid" onclick="setView('grid')" title="Grid view">⊞</button>
+    <button class="view-btn" id="btnList" onclick="setView('list')" title="List view">☰</button>
+  </div>
+</div>
+
+<main>
+  <div class="collection-grid active" id="gridView"></div>
+  <div class="collection-list" id="listView">
+    <div class="list-header">
+      <span>Name</span>
+      <span>Brand</span>
+      <span>Price</span>
+      <span>Shelf / Scent</span>
+      <span>Wear</span>
+      <span>Acquired</span>
+      <span></span>
+    </div>
+    <div id="listRows"></div>
+  </div>
+</main>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+    <h2 class="modal-title" id="modalTitle">Add <em>perfume</em></h2>
+    <input type="hidden" id="editIndex" value="-1">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Brand *</label>
+        <input class="form-input" id="fBrand" placeholder="e.g. Paris Corner">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Name *</label>
+        <input class="form-input" id="fName" placeholder="e.g. Pistachio">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Collection / Line</label>
+        <input class="form-input" id="fLine" placeholder="e.g. Khair">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price</label>
+        <input class="form-input" id="fPrice" placeholder="$24.99" type="text">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Vendor</label>
+        <input class="form-input" id="fVendor" placeholder="e.g. Amazon">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date Acquired</label>
+        <input class="form-input" id="fDate" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Shelf / Scent Family</label>
+        <input class="form-input" id="fShelf" placeholder="e.g. Vanilla Gourmand">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Wearability</label>
+        <select class="form-select" id="fWear">
+          <option value="Easy reach">Easy reach</option>
+          <option value="Main character only">Main character only</option>
+        </select>
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Simple Scent Profile</label>
+        <input class="form-input" id="fProfile" placeholder="e.g. creamy pistachio gourmand, nutty sweet">
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Smells Like (closest vibe)</label>
+        <textarea class="form-textarea" id="fSmells" placeholder="e.g. Kayali Utopia Vanilla Coco 21 · Khadlaj Pistachio"></textarea>
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Tracking Number</label>
+        <input class="form-input" id="fTracking" placeholder="Optional">
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Duplicate / Similar To</label>
+        <input class="form-input" id="fDup" placeholder="e.g. Kayali Yum Pistachio Gelato | 33">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal('addModal')">Cancel</button>
+      <button class="btn-save" onclick="savePerfume()">Save Perfume</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal" style="max-width:640px;">
+    <button class="modal-close" onclick="closeModal('importModal')">✕</button>
+    <h2 class="modal-title">Import <em>collection</em></h2>
+
+    <div class="import-drop" id="importDrop">
+      <input type="file" id="importFile" accept=".csv,.xlsx,.xls" onchange="handleFile(this.files[0])">
+      <span class="import-drop-icon">📂</span>
+      <span class="import-drop-label">Drop your file here, or tap to browse</span>
+      <span class="import-drop-sub">Accepts .csv, .xlsx, or .xls files</span>
+    </div>
+
+    <div class="import-preview" id="importPreview">
+      <p class="import-preview-title">Map your columns</p>
+      <div class="import-info" id="importInfo"></div>
+      <div class="col-map-grid" id="colMapGrid"></div>
+      <p class="import-preview-title" style="margin-top:8px;">If data already exists:</p>
+      <div class="import-options">
+        <label class="import-radio"><input type="radio" name="importMode" value="replace" checked> Replace everything</label>
+        <label class="import-radio"><input type="radio" name="importMode" value="append"> Append to existing</label>
+      </div>
+      <div class="form-actions" style="margin-top:0;padding-top:16px;">
+        <button class="btn-cancel" onclick="resetImport()">Choose different file</button>
+        <button class="btn-save" onclick="doImport()">Import Collection</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const SHELF_COLORS = {
+  'Vanilla Gourmand': ['#7A5230','#3A2810'],
+  'Coffee / Chocolate': ['#5A3A20','#2A1808'],
+  'Light Floral / Fruity': ['#9A5A7A','#4A1A3A'],
+  'Candy Gourmand': ['#9A5A8A','#5A1A4A'],
+  'Nutty Gourmand': ['#7A6030','#4A3810'],
+  'Marshmallow Gourmand': ['#9A7A8A','#5A3A5A'],
+  'Oriental / Amber / Spicy': ['#8A4A10','#4A2008'],
+  'Sweet Oriental': ['#8A5020','#4A2810'],
+  'Floral': ['#8A4A6A','#4A1A3A'],
+};
+
+function swatchGradient(shelf) {
+  const c = SHELF_COLORS[shelf] || ['#5A4A6A','#2A1A3A'];
+  return `radial-gradient(circle, ${c[0]}, ${c[1]})`;
+}
+
+const DEFAULT_DATA = [
+  { brand:'Ard al Zaafaran', name:'Pink Blush', line:'', price:'$16.46', vendor:'Amazon', date:'1/3/2026', shelf:'Marshmallow Gourmand', wear:'Easy reach', profile:'pink candy musk, soft sweet', smells:'Ariana Grande Sweet Like Candy · Ariana Grande Cloud', tracking:'', dup:'Yum Boujee Marshmallow | 81', ref:'' },
+  { brand:'Armaf', name:'Women', line:'Club de Nuit', price:'$34.99', vendor:"Marshall's", date:'1/3/2026', shelf:'Oriental / Amber / Spicy', wear:'Main character only', profile:'citrus rose patchouli chypre, classy and grown', smells:'Coco Mademoiselle · Lattafa Fakhar Rose', tracking:'', dup:'Chanel Coco Mademoiselle', ref:'https://www.fragrantica.com/perfume/Armaf/Club-de-Nuit-Woman-27655.html' },
+  { brand:'Armaf', name:'Untold', line:'Club de Nuit', price:'$36.49', vendor:'Amazon', date:'1/22/2026', shelf:'Oriental / Amber / Spicy', wear:'Main character only', profile:'saffron jasmine amberwood, sweet airy amber', smells:'Baccarat Rouge 540 · Al Haramain Amber Oud Rouge', tracking:'', dup:'Baccarat Rouge 540 (BR540) by Maison Francis Kurkdjian', ref:'https://www.fragrantica.com/perfume/Armaf/Club-de-Nuit-Untold-78476.html' },
+  { brand:'Paris Corner', name:'Elania', line:'Emir', price:'$23.99', vendor:'Amazon', date:'1/22/2026', shelf:'Light Floral / Fruity', wear:'Easy reach', profile:'lychee rhubarb rose, fresh tart rosy', smells:'Kayali Vanilla 28 · Lattafa Eclaire', tracking:'', dup:'Parfums de Marly Delina', ref:'https://ladihya.com/en-us/products/elania-emir-paris-corner' },
+  { brand:'Paris Corner', name:'Creamy Biscuit Temptation', line:'Ministry of Gourmand', price:'$29.00', vendor:'Amazon', date:'1/22/2026', shelf:'Vanilla Gourmand', wear:'Easy reach', profile:'sweet gourmand or floral (notes vary)', smells:'Lattafa Brioche Vanille · Zimaya Tiramisu Caramel', tracking:'', dup:"Sol de Janeiro Cheirosa '71 Perfume Mist", ref:'' },
+  { brand:'Paris Corner', name:'Eshal Vanilla', line:'', price:'$29.99', vendor:'Amazon', date:'1/22/2026', shelf:'Vanilla Gourmand', wear:'Easy reach', profile:'vanilla gourmand, sweet cozy', smells:'Kayali Vanilla 28 · Burberry Goddess', tracking:'', dup:'Vanilla | 28', ref:'' },
+  { brand:'Paris Corner', name:'Tiramisu Speculoos', line:'Ministry of Gourmand', price:'$31.00', vendor:'Amazon', date:'1/22/2026', shelf:'Coffee / Chocolate', wear:'Easy reach', profile:'tiramisu coffee cocoa dessert gourmand', smells:'Zimaya Tiramisu S\'mores · Maison Asrar Vanilla Seduction', tracking:'', dup:'Biscoff cookies', ref:'' },
+  { brand:'Aroma Concepts', name:'Coffee Blend', line:'', price:'$28.00', vendor:'Amazon', date:'1/22/2026', shelf:'Coffee / Chocolate', wear:'Easy reach', profile:'coffee latte gourmand, warm roasted', smells:'Mancera Amore Caffe · Montale Intense Café', tracking:'', dup:'Mancera Amore Cafe', ref:'' },
+  { brand:'Armaf', name:'Imperiale', line:'Club de Nuit', price:'$38.90', vendor:'Amazon', date:'1/22/2026', shelf:'Sweet Oriental', wear:'Main character only', profile:'lychee rose vanilla incense, plush rosy sweet', smells:'Delina Exclusif · Maison Alhambra Delilah', tracking:'', dup:'Parfums de Marly Delina Exclusif', ref:'https://www.fragrantica.com/perfume/Armaf/Club-de-Nuit-White-Imperiale-78474.html' },
+  { brand:'Paris Corner', name:'Vanilla Mood', line:'Reham', price:'$26.00', vendor:'Amazon', date:'1/20/2025', shelf:'Vanilla Gourmand', wear:'Easy reach', profile:'vanilla gourmand, sweet cozy', smells:'Lattafa Nebras · Kayali Vanilla 28', tracking:'', dup:"Tom Ford's Vanilla Sex", ref:'' },
+  { brand:'Paris Corner', name:'Vanille', line:'December', price:'$26.45', vendor:'Fragrancenet', date:'12/30/2025', shelf:'Vanilla Gourmand', wear:'Easy reach', profile:'sweet gourmand or floral (notes vary)', smells:'Lattafa Nebras · Kayali Vanilla 28', tracking:'', dup:'Vanilla | 28', ref:'' },
+  { brand:'Paris Corner', name:'Confection', line:'Khair', price:'$23.93', vendor:'Fragrancenet', date:'12/30/2025', shelf:'Candy Gourmand', wear:'Easy reach', profile:'sweet gourmand or floral (notes vary)', smells:'Kayali Yum Boujee Marshmallow · Ariana Grande Sweet Like Candy', tracking:'', dup:'Vanilla Candy Rock Sugar | 42', ref:'' },
+  { brand:'Paris Corner', name:'Pistachio', line:'Khair', price:'$22.67', vendor:'Fragrancenet', date:'12/30/2025', shelf:'Nutty Gourmand', wear:'Easy reach', profile:'creamy pistachio gourmand, nutty sweet', smells:'Kayali Utopia Vanilla Coco 21 · Khadlaj Pistachio', tracking:'', dup:'Yum Pistachio Gelato | 33', ref:'' },
+  { brand:'Paris Corner', name:'Peach Delulu', line:'Khair', price:'$24.99', vendor:'Fragrancenet', date:'12/30/2025', shelf:'Light Floral / Fruity', wear:'Easy reach', profile:'sweet gourmand or floral (notes vary)', smells:'Tom Ford Bitter Peach · Kayali Eden Juicy Apple', tracking:'', dup:"Sarah Baker Peach's Revenge", ref:'' },
+  { brand:'Paris Corner', name:'Felicity', line:'Khair', price:'$26.45', vendor:'Fragrancenet', date:'12/30/2025', shelf:'Light Floral / Fruity', wear:'Easy reach', profile:'sweet gourmand or floral (notes vary)', smells:'Delina · Carolina Herrera Good Girl Blush', tracking:'', dup:'The Wedding Silk Santal | 36', ref:'' },
+  { brand:'Paris Corner', name:'Fusion', line:'Khair', price:'$22.67', vendor:'Fragrancenet', date:'12/30/2025', shelf:'Light Floral / Fruity', wear:'Easy reach', profile:'sweet gourmand or floral (notes vary)', smells:'Baccarat Rouge 540 · Mancera Instant Crush', tracking:'', dup:'Eden Sparkling Lychee | 39', ref:'' },
+  { brand:'Gulf Orchid', name:'Sweet Cherry Kiss', line:'', price:'$23.33', vendor:'TikTok Shop Zenia', date:'1/31/2026', shelf:'Light Floral / Fruity', wear:'Easy reach', profile:'sweet cherry fruity gourmand, flirty', smells:'Kayali Lovefest Burning Cherry · Tom Ford Lost Cherry', tracking:'', dup:'Lovefest Burning Cherry | 48', ref:'' },
+  { brand:'Gulf Orchid', name:'Creamy Pistachio', line:'', price:'$23.33', vendor:'TikTok Shop Zenia', date:'1/31/2026', shelf:'Nutty Gourmand', wear:'Easy reach', profile:'creamy pistachio gourmand, nutty sweet', smells:'Kayali Utopia Vanilla Coco · Khadlaj Pistachio', tracking:'', dup:'Yum Pistachio Gelato | 33', ref:'' },
+  { brand:'Gulf Orchid', name:'Pink Marshmallow', line:'', price:'$23.33', vendor:'TikTok Shop Zenia', date:'1/31/2026', shelf:'Marshmallow Gourmand', wear:'Easy reach', profile:'marshmallow fluffy gourmand, airy sweet', smells:'Kayali Yum Boujee Marshmallow · Ariana Grande Cloud Pink', tracking:'', dup:'Yum Boujee Marshmallow | 81', ref:'' },
+  { brand:'Gulf Orchid', name:'Vanilla Addiction', line:'', price:'$23.33', vendor:'TikTok Shop Zenia', date:'1/31/2026', shelf:'Vanilla Gourmand', wear:'Easy reach', profile:'vanilla gourmand, sweet cozy', smells:'Kayali Vanilla 28 · Lattafa Eclaire', tracking:'', dup:'Vanilla | 28', ref:'' },
+  { brand:'Gulf Orchid', name:'Heavenly Lychee', line:'', price:'$23.33', vendor:'TikTok Shop Zenia', date:'1/31/2026', shelf:'Light Floral / Fruity', wear:'Easy reach', profile:'sparkling lychee fruity floral, bright', smells:'Rabanne Fame · Delina', tracking:'', dup:'Eden Sparkling Lychee | 39', ref:'' },
+  { brand:'Gulf Orchid', name:'Sweet Like Candy', line:'', price:'$23.33', vendor:'TikTok Shop Zenia', date:'1/31/2026', shelf:'Candy Gourmand', wear:'Easy reach', profile:'sweet gourmand or floral (notes vary)', smells:'Ariana Grande Sweet Like Candy · Paris Corner Pink', tracking:'', dup:'Vanilla Candy Rock Sugar | 42', ref:'' },
+  { brand:'Maison Asrar', name:'Vanilla Voyage', line:'', price:'$33.00', vendor:'TikTok Shop Aroma Concepts', date:'1/31/2026', shelf:'Vanilla Gourmand', wear:'Easy reach', profile:'vanilla gourmand, sweet cozy', smells:'Kayali Vanilla 28 · Burberry Goddess', tracking:'', dup:'Giardini di Toscana - Bianco Latte', ref:'' },
+  { brand:'Lattafa', name:'Choco Overdose', line:'Give Me Gourmand', price:'$33.99', vendor:'Jomashop', date:'1/17/2026', shelf:'Coffee / Chocolate', wear:'Easy reach', profile:'chocolate gourmand, rich sweet', smells:'Montale Chocolate Greedy · Anfar Dubai Chocolate', tracking:'9436250206079002330861', dup:'', ref:'' },
+  { brand:'Lattafa', name:'Berry On Top', line:'Give Me Gourmand', price:'$39.99', vendor:'Jomashop', date:'1/20/2026', shelf:'Light Floral / Fruity', wear:'Easy reach', profile:'sweet gourmand or floral (notes vary)', smells:'Burberry Her · Rabanne Fame', tracking:'9436250206079002339123', dup:'Bath & Body Works Strawberry Poundcake', ref:'' },
+];
+
+let collection = [];
+let editingIndex = -1;
+let currentView = 'grid';
+
+// ── SUPABASE ─────────────────────────────────────────────────
+const SUPABASE_URL = 'https://gjjzcgufkesfgkoihzkp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqanpjZ3Vma2VzZmdrb2loemtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4OTM1MjcsImV4cCI6MjA5NzQ2OTUyN30.CEEwMuu9JiyngEhlvOV_xihVv6k1geWl1MZ_2Tuk6EA';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── STORAGE ──────────────────────────────────────────────────
+async function loadData() {
+  showSyncStatus('Loading…');
+  try {
+    const { data, error } = await db.from('perfumes').select('*').order('name');
+    if (error) throw error;
+    if (data && data.length > 0) {
+      collection = data.map(row => ({
+        _dbid: row.id,
+        brand: row.brand || '',
+        name: row.name || '',
+        line: row.line || '',
+        price: row.price || '',
+        vendor: row.vendor || '',
+        date: row.date || '',
+        shelf: row.shelf || '',
+        wear: row.wear || '',
+        profile: row.profile || '',
+        smells: row.smells || '',
+        tracking: row.tracking || '',
+        dup: row.dup || '',
+        ref: row.ref || '',
+        image: row.image || '',
+      }));
+      showSyncStatus('✓ Synced');
+    } else {
+      // First time — load defaults
+      collection = [...DEFAULT_DATA];
+      await saveData();
+      showSyncStatus('✓ Ready');
+    }
+  } catch(e) {
+    showSyncStatus('⚠ Offline — using local');
+    // Fallback to localStorage
+    try {
+      const local = localStorage.getItem('wardrobe-collection');
+      collection = local ? JSON.parse(local) : [...DEFAULT_DATA];
+    } catch { collection = [...DEFAULT_DATA]; }
+  }
+  render();
+}
+
+async function saveData() {
+  // Also save to localStorage as backup
+  try { localStorage.setItem('wardrobe-collection', JSON.stringify(collection)); } catch {}
+
+  try {
+    // Upsert all records to Supabase
+    const rows = collection.map(p => ({
+      id: p._dbid || undefined,
+      brand: p.brand, name: p.name, line: p.line,
+      price: p.price, vendor: p.vendor, date: p.date,
+      shelf: p.shelf, wear: p.wear, profile: p.profile,
+      smells: p.smells, tracking: p.tracking, dup: p.dup,
+      ref: p.ref, image: p.image || '',
+    }));
+    const { error } = await db.from('perfumes').upsert(rows, { onConflict: 'id' });
+    if (error) throw error;
+    showSyncStatus('✓ Saved');
+  } catch(e) {
+    showSyncStatus('⚠ Saved locally only');
+  }
+}
+
+async function deleteFromDB(dbid) {
+  if (!dbid) return;
+  try { await db.from('perfumes').delete().eq('id', dbid); } catch {}
+}
+
+function showSyncStatus(msg) {
+  let el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.opacity = '1';
+  if (msg.startsWith('✓')) setTimeout(() => { el.style.opacity = '0'; }, 2000);
+}
+
+// ── STATS ─────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('statTotal').textContent = collection.length;
+  const total = collection.reduce((s, p) => {
+    const n = parseFloat(p.price.replace(/[^0-9.]/g,''));
+    return s + (isNaN(n) ? 0 : n);
+  }, 0);
+  document.getElementById('statSpent').textContent = '$' + total.toFixed(0);
+  const brands = new Set(collection.map(p => p.brand)).size;
+  document.getElementById('statBrands').textContent = brands;
+}
+
+// ── FILTERS ──────────────────────────────────────────────────
+function populateFilters() {
+  const brandSel = document.getElementById('filterBrand');
+  const shelfSel = document.getElementById('filterShelf');
+  const vendorSel = document.getElementById('filterVendor');
+  const brands = [...new Set(collection.map(p => p.brand))].sort();
+  const shelves = [...new Set(collection.map(p => p.shelf).filter(Boolean))].sort();
+  const vendors = [...new Set(collection.map(p => p.vendor).filter(Boolean))].sort();
+  const bv = brandSel.value, sv = shelfSel.value, vv = vendorSel.value;
+  brandSel.innerHTML = '<option value="">All Brands</option>' + brands.map(b => `<option${b===bv?' selected':''}>${b}</option>`).join('');
+  shelfSel.innerHTML = '<option value="">All Shelves</option>' + shelves.map(s => `<option${s===sv?' selected':''}>${s}</option>`).join('');
+  vendorSel.innerHTML = '<option value="">All Vendors</option>' + vendors.map(v => `<option${v===vv?' selected':''}>${v}</option>`).join('');
+}
+
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const brand = document.getElementById('filterBrand').value;
+  const shelf = document.getElementById('filterShelf').value;
+  const wear = document.getElementById('filterWear').value;
+  const vendor = document.getElementById('filterVendor').value;
+  const sort = document.getElementById('filterSort').value;
+
+  // Stamp real index BEFORE filtering/sorting
+  let results = collection.map((p, i) => ({ ...p, _idx: i })).filter(p => {
+    if (brand && p.brand !== brand) return false;
+    if (shelf && p.shelf !== shelf) return false;
+    if (wear && p.wear !== wear) return false;
+    if (vendor && p.vendor !== vendor) return false;
+    if (q) {
+      const haystack = [p.name, p.brand, p.line, p.shelf, p.profile, p.smells].join(' ').toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  results.sort((a, b) => {
+    const priceA = parseFloat((a.price || '0').replace(/[^0-9.]/g,'')) || 0;
+    const priceB = parseFloat((b.price || '0').replace(/[^0-9.]/g,'')) || 0;
+    switch (sort) {
+      case 'name-az':   return a.name.localeCompare(b.name);
+      case 'name-za':   return b.name.localeCompare(a.name);
+      case 'brand-az':  return a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name);
+      case 'date-new':  return new Date(b.date) - new Date(a.date);
+      case 'date-old':  return new Date(a.date) - new Date(b.date);
+      case 'price-low': return priceA - priceB;
+      case 'price-high':return priceB - priceA;
+      default: return 0;
+    }
+  });
+
+  return results;
+}
+
+function applyFilters() { render(); }
+
+// ── RENDER ────────────────────────────────────────────────────
+function render() {
+  updateStats();
+  populateFilters();
+  const filtered = getFiltered();
+  renderGrid(filtered);
+  renderList(filtered);
+}
+
+function renderGrid(items) {
+  const grid = document.getElementById('gridView');
+  if (!items.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>No perfumes found</p><span>Try adjusting your filters</span></div>';
+    return;
+  }
+  grid.innerHTML = items.map(p => {
+    const idx = p._idx;
+    const wearClass = p.wear === 'Easy reach' ? 'wear-easy' : 'wear-main';
+    const wearShort = p.wear === 'Easy reach' ? 'Easy Reach' : 'Main Character';
+    const imageHtml = p.image
+      ? `<div class="card-swatch"><img src="${p.image}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div class=\\"card-swatch-circle\\" style=\\"background:${swatchGradient(p.shelf)}\\"></div>'"></div>`
+      : `<div class="card-swatch"><div class="card-swatch-circle" style="background:${swatchGradient(p.shelf)}"></div></div>`;
+    return `
+    <div class="perf-card" onclick="openDetail(${idx})">
+      ${p.dup ? '<span class="dup-badge">∼ dupe</span>' : ''}
+      ${imageHtml}
+      <p class="card-brand">${p.brand}</p>
+      <h3 class="card-name">${p.name}</h3>
+      ${p.line ? `<p class="card-line">${p.line}</p>` : ''}
+      <p class="card-shelf">${p.shelf || ''}</p>
+      <p class="card-profile">${p.profile || ''}</p>
+      <div class="card-footer">
+        <span class="card-price">${p.price || '—'}</span>
+        <span class="wearability-badge ${wearClass}">${wearShort}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderList(items) {
+  const rows = document.getElementById('listRows');
+  if (!items.length) {
+    rows.innerHTML = '<div class="empty-state"><p>No perfumes found</p></div>';
+    return;
+  }
+  rows.innerHTML = items.map(p => {
+    const idx = p._idx;
+    const wearClass = p.wear === 'Easy reach' ? 'wear-easy' : 'wear-main';
+    return `
+    <div class="list-row">
+      <div onclick="openDetail(${idx})" style="cursor:pointer">
+        <div class="list-name">${p.name}</div>
+        ${p.line ? `<div style="font-size:0.68rem;color:var(--violet-light);font-style:italic">${p.line}</div>` : ''}
+      </div>
+      <div class="list-brand" onclick="openDetail(${idx})" style="cursor:pointer">${p.brand}</div>
+      <div class="list-price">${p.price || '—'}</div>
+      <div class="list-shelf">${p.shelf || ''}</div>
+      <div class="list-wear wearability-badge ${wearClass}" style="font-size:0.6rem;padding:2px 6px">${p.wear === 'Easy reach' ? 'Easy' : 'Main'}</div>
+      <div class="list-date">${p.date || ''}</div>
+      <div class="list-actions">
+        <button class="btn-icon" onclick="openEditModal(${idx})" title="Edit">✎</button>
+        <button class="btn-icon delete" onclick="deleteConfirm(${idx})" title="Delete">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── VIEW TOGGLE ───────────────────────────────────────────────
+function setView(v) {
+  currentView = v;
+  document.getElementById('gridView').classList.toggle('active', v === 'grid');
+  document.getElementById('gridView').classList.toggle('hidden', v !== 'grid');
+  document.getElementById('listView').classList.toggle('active', v === 'list');
+  document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
+  document.getElementById('btnList').classList.toggle('active', v === 'list');
+}
+
+// ── DETAIL MODAL ──────────────────────────────────────────────
+function openDetail(idx) {
+  const p = collection[idx];
+  const imageHtml = p.image
+    ? `<div class="detail-swatch"><img src="${p.image}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div class=detail-swatch-circle style=background:${swatchGradient(p.shelf)}></div>'"></div>`
+    : `<div class="detail-swatch"><div class="detail-swatch-circle" style="background:${swatchGradient(p.shelf)}"></div></div>`;
+  document.getElementById('detailContent').innerHTML = `
+    <div class="detail-header">
+      ${imageHtml}
+      <div style="flex:1">
+        <p class="detail-brand">${p.brand}${p.line ? ' · ' + p.line : ''}</p>
+        <h2 class="detail-name">${p.name}</h2>
+        ${p.shelf ? `<p class="detail-line">${p.shelf}</p>` : ''}
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+          <button onclick="autoFetchImage(${idx})" style="background:var(--gold);color:#fff;border:none;padding:7px 12px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:DM Sans,sans-serif;">🔍 Auto-fetch</button>
+          <label style="background:transparent;color:var(--gold);border:1px solid var(--gold);padding:7px 12px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:DM Sans,sans-serif;">
+            📷 Upload
+            <input type="file" accept="image/*" style="display:none" onchange="uploadImage(event,${idx})">
+          </label>
+          ${p.image ? `<button onclick="removeImage(${idx})" style="background:transparent;color:#9A3040;border:1px solid #9A3040;padding:7px 12px;font-size:0.7rem;cursor:pointer;font-family:DM Sans,sans-serif;">✕ Remove</button>` : ''}
+        </div>
+        <div id="fetchStatus" style="font-size:0.75rem;color:var(--muted);margin-top:8px;min-height:16px;"></div>
+      </div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-field"><p class="detail-field-label">Price</p><p class="detail-field-value">${p.price || '—'}</p></div>
+      <div class="detail-field"><p class="detail-field-label">Vendor</p><p class="detail-field-value">${p.vendor || '—'}</p></div>
+      <div class="detail-field"><p class="detail-field-label">Acquired</p><p class="detail-field-value">${p.date || '—'}</p></div>
+      <div class="detail-field"><p class="detail-field-label">Wearability</p><p class="detail-field-value">${p.wear || '—'}</p></div>
+      ${p.tracking ? `<div class="detail-field" style="grid-column:1/-1"><p class="detail-field-label">Tracking</p><p class="detail-field-value" style="font-size:0.78rem;word-break:break-all">${p.tracking}</p></div>` : ''}
+    </div>
+    ${p.profile ? `<div class="detail-field" style="margin-bottom:12px"><p class="detail-field-label">Scent Profile</p><p class="detail-field-value" style="font-style:italic">${p.profile}</p></div>` : ''}
+    ${p.smells ? `<div class="detail-smells"><p class="detail-smells-label">Smells Like</p><p class="detail-smells-value">${p.smells.replace(/·/g,'<br>·')}</p></div>` : ''}
+    ${p.dup ? `<div class="detail-dup"><p class="detail-dup-label">Dupe / Similar To</p><p class="detail-dup-value">${p.dup}</p></div>` : ''}
+    ${p.ref ? `<div style="margin-top:8px"><a href="${p.ref}" target="_blank" style="font-size:0.72rem;color:var(--violet-light);word-break:break-all">${p.ref}</a></div>` : ''}
+    <div class="detail-actions">
+      <button class="btn-cancel" onclick="closeModal('detailModal');openEditModal(${idx})">Edit</button>
+      <button class="btn-save" onclick="closeModal('detailModal')">Close</button>
+    </div>
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+// ── ADD / EDIT MODAL ──────────────────────────────────────────
+function openAddModal() {
+  editingIndex = -1;
+  document.getElementById('modalTitle').innerHTML = 'Add <em>perfume</em>';
+  clearForm();
+  document.getElementById('addModal').classList.add('open');
+}
+
+function openEditModal(idx) {
+  editingIndex = idx;
+  const p = collection[idx];
+  document.getElementById('modalTitle').innerHTML = 'Edit <em>perfume</em>';
+  document.getElementById('fBrand').value = p.brand || '';
+  document.getElementById('fName').value = p.name || '';
+  document.getElementById('fLine').value = p.line || '';
+  document.getElementById('fPrice').value = p.price || '';
+  document.getElementById('fVendor').value = p.vendor || '';
+  document.getElementById('fDate').value = toInputDate(p.date);
+  document.getElementById('fShelf').value = p.shelf || '';
+  document.getElementById('fWear').value = p.wear || 'Easy reach';
+  document.getElementById('fProfile').value = p.profile || '';
+  document.getElementById('fSmells').value = p.smells || '';
+  document.getElementById('fTracking').value = p.tracking || '';
+  document.getElementById('fDup').value = p.dup || '';
+  document.getElementById('addModal').classList.add('open');
+}
+
+function toInputDate(d) {
+  if (!d) return '';
+  const parts = d.split('/');
+  if (parts.length === 3) {
+    const [m, day, y] = parts;
+    return `${y}-${m.padStart(2,'0')}-${day.padStart(2,'0')}`;
+  }
+  return '';
+}
+
+function fromInputDate(d) {
+  if (!d) return '';
+  const [y, m, day] = d.split('-');
+  return `${parseInt(m)}/${parseInt(day)}/${y}`;
+}
+
+function clearForm() {
+  ['fBrand','fName','fLine','fPrice','fVendor','fDate','fShelf','fProfile','fSmells','fTracking','fDup'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('fWear').value = 'Easy reach';
+}
+
+function savePerfume() {
+  const brand = document.getElementById('fBrand').value.trim();
+  const name = document.getElementById('fName').value.trim();
+  if (!brand || !name) { showToast('Brand and Name are required'); return; }
+  const existingImage = editingIndex >= 0 ? (collection[editingIndex].image || '') : '';
+  const entry = {
+    brand, name,
+    line: document.getElementById('fLine').value.trim(),
+    price: document.getElementById('fPrice').value.trim(),
+    vendor: document.getElementById('fVendor').value.trim(),
+    date: fromInputDate(document.getElementById('fDate').value),
+    shelf: document.getElementById('fShelf').value.trim(),
+    wear: document.getElementById('fWear').value,
+    profile: document.getElementById('fProfile').value.trim(),
+    smells: document.getElementById('fSmells').value.trim(),
+    tracking: document.getElementById('fTracking').value.trim(),
+    dup: document.getElementById('fDup').value.trim(),
+    ref: '',
+    image: existingImage,
+  };
+  if (editingIndex >= 0) {
+    collection[editingIndex] = entry;
+    showToast('Perfume updated ✓');
+  } else {
+    collection.unshift(entry);
+    showToast('Perfume added to wardrobe ✓');
+  }
+  saveData();
+  closeModal('addModal');
+  render();
+}
+
+// ── IMAGE FUNCTIONS ───────────────────────────────────────────
+async function autoFetchImage(idx) {
+  const p = collection[idx];
+  const status = document.getElementById('fetchStatus');
+  if (status) status.textContent = 'Searching…';
+
+  // Use Open Graph image from Fragrantica search
+  const query = encodeURIComponent(`${p.brand} ${p.name} perfume`);
+  const url = `https://www.google.com/search?q=${query}+site:fragrantica.com&tbm=isch`;
+
+  // Since we can't scrape directly due to CORS, use a proxy approach via
+  // the Wikipedia/open image APIs — fallback to a reliable perfume image service
+  try {
+    // Try Fragrantica-style URL construction first
+    const fragUrl = `https://fimgs.net/mdimg/perfume/375x500.${encodeURIComponent(p.name.toLowerCase().replace(/\s+/g,'-'))}.jpg`;
+
+    // Use DuckDuckGo instant answer as image source (CORS-friendly)
+    const searchUrl = `https://api.duckduckgo.com/?q=${query}+perfume+bottle&format=json&iax=images&ia=images`;
+    const res = await fetch(searchUrl);
+    const data = await res.json();
+    const img = data.Image || (data.RelatedTopics && data.RelatedTopics[0] && data.RelatedTopics[0].Icon && data.RelatedTopics[0].Icon.URL);
+
+    if (img && img.length > 5) {
+      collection[idx].image = img;
+      saveData();
+      openDetail(idx);
+      showToast('Image found ✓');
+    } else {
+      // Fallback: open Google Images for manual selection
+      if (status) status.textContent = 'Auto-fetch unavailable — use Upload instead';
+      window.open(`https://www.google.com/search?q=${query}+perfume+bottle&tbm=isch`, '_blank');
+    }
+  } catch(e) {
+    if (status) status.textContent = 'Could not auto-fetch — try uploading manually';
+    window.open(`https://www.google.com/search?q=${query}+perfume+bottle&tbm=isch`, '_blank');
+  }
+}
+
+function uploadImage(event, idx) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    collection[idx].image = e.target.result;
+    saveData();
+    openDetail(idx);
+    showToast('Photo saved ✓');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(idx) {
+  collection[idx].image = '';
+  saveData();
+  openDetail(idx);
+  showToast('Image removed');
+}
+
+function deleteConfirm(idx) {
+  const p = collection[idx];
+  if (confirm(`Remove "${p.name}" by ${p.brand} from your wardrobe?`)) {
+    const dbid = p._dbid;
+    collection.splice(idx, 1);
+    deleteFromDB(dbid);
+    saveData();
+    render();
+    showToast('Removed from wardrobe');
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) closeModal(el.id); });
+});
+
+// ── TOAST ─────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── IMPORT ────────────────────────────────────────────────────
+let importedRows = [];
+let importedHeaders = [];
+
+// Column name aliases mapping to our internal fields
+const COL_ALIASES = {
+  brand:    ['brand','house','maison','maker','brand name'],
+  name:     ['name','fragrance','perfume','scent','title','fragrance name','perfume name'],
+  line:     ['line','collection','collection/line','collection line','series','line name'],
+  price:    ['price','cost','amount','paid'],
+  vendor:   ['vendor','seller','source','shop','store','bought from','purchased from','where bought'],
+  date:     ['date','acquired','date acquired','purchase date','bought','when','date bought'],
+  shelf:    ['shelf','category','family','scent family','type','accord'],
+  wear:     ['wear','wearability','usage','occasion'],
+  profile:  ['profile','scent profile','simple scent profile','notes','description','simple profile'],
+  smells:   ['smells','smells like','vibes','similar','closest vibe','closest','closest scent','smells like (closest vibe)'],
+  tracking: ['tracking','tracking number','track','shipment','tracking no'],
+  dup:      ['dup','duplicate','dupe','similar to','duplicate?','dupes'],
+  ref:      ['ref','reference','link','url','reference (if any)'],
+};
+
+function guessField(header) {
+  const h = (header || '').toLowerCase().trim();
+  for (const [field, aliases] of Object.entries(COL_ALIASES)) {
+    if (aliases.some(a => h === a || h.includes(a))) return field;
+  }
+  return '';
+}
+
+
+function parseCSV(text) {
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (!lines.length) return { headers: [], rows: [] };
+  const parse = line => {
+    const cells = []; let cur = ''; let inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; continue; }
+      if (c === ',' && !inQ) { cells.push(cur.trim()); cur = ''; continue; }
+      cur += c;
+    }
+    cells.push(cur.trim());
+    return cells;
+  };
+  const headers = parse(lines[0]);
+  const rows = lines.slice(1).map(l => parse(l));
+  return { headers, rows };
+}
+
+async function parseXLSX(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+        const headers = json[0] ? json[0].map(String) : [];
+        const rows = json.slice(1).map(r => headers.map((_, i) => String(r[i] || '')));
+        resolve({ headers, rows });
+      } catch(err) { reject(err); }
+    };
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function handleFile(file) {
+  if (!file) return;
+  const name = file.name.toLowerCase();
+  if (!name.endsWith('.csv') && !name.endsWith('.xlsx') && !name.endsWith('.xls')) {
+    showToast('Please use a .csv or .xlsx file'); return;
+  }
+  const dropEl = document.getElementById('importDrop');
+  const origHTML = dropEl.innerHTML;
+  dropEl.querySelector('.import-drop-label') && (dropEl.querySelector('.import-drop-label').textContent = 'Reading file…');
+  try {
+    let parsed;
+    if (name.endsWith('.csv')) {
+      const text = await file.text();
+      parsed = parseCSV(text);
+    } else {
+      await loadXLSX();
+      parsed = await parseXLSX(file);
+    }
+    if (!parsed.headers.length) { showToast('File appears empty'); return; }
+    importedHeaders = parsed.headers;
+    importedRows = parsed.rows.filter(r => r.some(c => String(c).trim()));
+    showColumnMapper();
+  } catch(e) {
+    showToast('Error reading file: ' + (e.message || 'unknown error'));
+    dropEl.innerHTML = origHTML;
+  }
+}
+
+function loadXLSX() {
+  return new Promise((res, rej) => {
+    if (typeof XLSX !== 'undefined') { res(); return; }
+    const urls = [
+      'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+      'https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js',
+    ];
+    let i = 0;
+    function tryNext() {
+      if (i >= urls.length) { rej(new Error('Could not load Excel library — try saving as CSV instead')); return; }
+      const s = document.createElement('script');
+      s.src = urls[i++];
+      s.onload = res; s.onerror = tryNext;
+      document.head.appendChild(s);
+    }
+    tryNext();
+  });
+}
+
+function showColumnMapper() {
+  const preview = document.getElementById('importPreview');
+  const info = document.getElementById('importInfo');
+  const grid = document.getElementById('colMapGrid');
+  info.textContent = `Found ${importedRows.length} rows and ${importedHeaders.length} columns. Match each app field to your spreadsheet column:`;
+
+  const fields = [
+    { key:'brand', label:'Brand *' },
+    { key:'name', label:'Name *' },
+    { key:'line', label:'Collection / Line' },
+    { key:'price', label:'Price' },
+    { key:'vendor', label:'Vendor' },
+    { key:'date', label:'Date Acquired' },
+    { key:'shelf', label:'Shelf / Scent Family' },
+    { key:'wear', label:'Wearability' },
+    { key:'profile', label:'Scent Profile' },
+    { key:'smells', label:'Smells Like' },
+    { key:'tracking', label:'Tracking Number' },
+    { key:'dup', label:'Duplicate?' },
+  ];
+
+  grid.innerHTML = fields.map(f => {
+    const guessed = importedHeaders.findIndex(h => guessField(h) === f.key);
+    const opts = importedHeaders.map((h, i) => `<option value="${i}"${i===guessed?' selected':''}>${h}</option>`).join('');
+    return `
+      <div class="col-map-row">
+        <span class="col-map-label">${f.label}</span>
+        <select class="form-select" id="map_${f.key}" style="font-size:0.78rem;padding:7px 10px;">
+          <option value="-1">— skip —</option>
+          ${opts}
+        </select>
+      </div>`;
+  }).join('');
+
+  preview.classList.add('visible');
+}
+
+function getMapping() {
+  const keys = ['brand','name','line','price','vendor','date','shelf','wear','profile','smells','tracking','dup'];
+  const map = {};
+  keys.forEach(k => {
+    const el = document.getElementById('map_' + k);
+    map[k] = el ? parseInt(el.value) : -1;
+  });
+  return map;
+}
+
+function excelDateToString(val) {
+  // If it's a number (Excel serial date), convert it
+  const num = parseFloat(val);
+  if (!isNaN(num) && num > 40000 && num < 60000) {
+    // Excel date serial: days since 1900-01-01 (with leap year bug offset)
+    const date = new Date((num - 25569) * 86400 * 1000);
+    const m = date.getUTCMonth() + 1;
+    const d = date.getUTCDate();
+    const y = date.getUTCFullYear();
+    return `${m}/${d}/${y}`;
+  }
+  return val; // already a string date, return as-is
+}
+
+async function doImport() {
+  try {
+    const map = getMapping();
+
+    // Check mapping — but be lenient, only require name OR brand
+    if (map.brand < 0 && map.name < 0) {
+      showToast('Please map at least Name or Brand column'); return;
+    }
+
+    if (!importedRows.length) {
+      showToast('No data rows found in file'); return;
+    }
+
+    const imported = importedRows.map(row => ({
+      brand:    map.brand    >= 0 ? String(row[map.brand]    || '').trim() : '',
+      name:     map.name     >= 0 ? String(row[map.name]     || '').trim() : '',
+      line:     map.line     >= 0 ? String(row[map.line]     || '').trim() : '',
+      price:    map.price    >= 0 ? String(row[map.price]    || '').trim() : '',
+      vendor:   map.vendor   >= 0 ? String(row[map.vendor]   || '').trim() : '',
+      date:     map.date     >= 0 ? excelDateToString(String(row[map.date] || '').trim()) : '',
+      shelf:    map.shelf    >= 0 ? String(row[map.shelf]    || '').trim() : '',
+      wear:     map.wear     >= 0 ? String(row[map.wear]     || '').trim() : '',
+      profile:  map.profile  >= 0 ? String(row[map.profile]  || '').trim() : '',
+      smells:   map.smells   >= 0 ? String(row[map.smells]   || '').trim() : '',
+      tracking: map.tracking >= 0 ? String(row[map.tracking] || '').trim() : '',
+      dup:      map.dup      >= 0 ? String(row[map.dup]      || '').trim() : '',
+      ref:      '',
+      image:    '',
+    })).filter(p => p.brand || p.name);
+
+    if (!imported.length) {
+      showToast('No valid perfumes found — check column mapping'); return;
+    }
+
+    const modeEl = document.querySelector('input[name="importMode"]:checked');
+    const mode = modeEl ? modeEl.value : 'replace';
+
+    if (mode === 'replace') {
+      collection = imported;
+    } else {
+      collection = [...collection, ...imported];
+    }
+
+    try { await window.storage.set('wardrobe-visited', 'true'); } catch(e) {}
+    saveData();
+    closeModal('importModal');
+    resetImport();
+    render();
+    // Save all to Supabase
+    showSyncStatus('Uploading to cloud…');
+    const rows = collection.map(p => ({
+      brand: p.brand, name: p.name, line: p.line,
+      price: p.price, vendor: p.vendor, date: p.date,
+      shelf: p.shelf, wear: p.wear, profile: p.profile,
+      smells: p.smells, tracking: p.tracking, dup: p.dup,
+      ref: p.ref || '', image: p.image || '',
+    }));
+    try {
+      if (mode === 'replace') {
+        await db.from('perfumes').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      }
+      const { error } = await db.from('perfumes').insert(rows);
+      if (error) throw error;
+      showSyncStatus('✓ Uploaded to cloud');
+    } catch(e) {
+      showSyncStatus('⚠ Saved locally only');
+    }
+    try { localStorage.setItem('wardrobe-collection', JSON.stringify(collection)); } catch {}
+    render();
+    showToast(`✓ Imported ${imported.length} perfumes!`);
+  } catch(err) {
+    showToast('Import failed: ' + (err.message || 'unknown error'));
+  }
+}
+
+function resetImport() {
+  importedRows = []; importedHeaders = [];
+  document.getElementById('importPreview').classList.remove('visible');
+  document.getElementById('importFile').value = '';
+}
+
+function openImportModal() {
+  resetImport();
+  document.getElementById('importModal').classList.add('open');
+  // Pre-load XLSX silently
+  loadXLSX().catch(() => {});
+}
+
+// Drag-over styling
+const drop = document.getElementById('importDrop');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+drop.addEventListener('drop', e => {
+  e.preventDefault(); drop.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+
+// ── EXPORT ────────────────────────────────────────────────────
+function exportCSV() {
+  const headers = ['Date Acquired','Tracking Number','Price','Vendor','Brand','Name','Collection/Line','Shelf','Wearability','Simple scent profile','Smells like','Duplicate?','Reference'];
+  const rows = collection.map(p => [
+    p.date, p.tracking, p.price, p.vendor, p.brand, p.name, p.line,
+    p.shelf, p.wear, p.profile, p.smells, p.dup, p.ref
+  ].map(v => `"${(v||'').replace(/"/g,'""')}"`));
+  const csv = [headers.map(h=>`"${h}"`).join(','), ...rows.map(r=>r.join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'my-perfume-wardrobe.csv';
+  a.click();
+  showToast('CSV exported ✓');
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+loadData();
+</script>
+</div><!-- /app-frame -->
+<script>
+// ── PWA SERVICE WORKER ────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  const sw = `
+    const CACHE = 'wardrobe-v1';
+    const ASSETS = [self.location.pathname];
+    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))));
+    self.addEventListener('fetch', e => e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    ));
+  `;
+  const blob = new Blob([sw], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+
+// ── PWA MANIFEST ──────────────────────────────────────────────
+const manifest = {
+  name: 'My Perfume Wardrobe',
+  short_name: 'Wardrobe',
+  description: 'My personal perfume collection',
+  start_url: window.location.href,
+  display: 'standalone',
+  background_color: '#D4607A',
+  theme_color: '#D4607A',
+  icons: [{
+    src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23D4607A'/><text y='.9em' font-size='80' x='10'>🌸</text></svg>",
+    sizes: '192x192', type: 'image/svg+xml'
+  }]
+};
+const mBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+const mUrl = URL.createObjectURL(mBlob);
+const mLink = document.createElement('link');
+mLink.rel = 'manifest'; mLink.href = mUrl;
+document.head.appendChild(mLink);
+</script>
+</body>
+</html>
