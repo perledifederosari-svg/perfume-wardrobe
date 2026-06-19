@@ -942,22 +942,55 @@ async function loadData() {
 }
 
 async function saveData() {
-  // Also save to localStorage as backup
+  // Save to localStorage as backup
   try { localStorage.setItem('wardrobe-collection', JSON.stringify(collection)); } catch {}
+}
 
+// Save a single perfume record to Supabase
+async function saveOne(idx) {
+  const p = collection[idx];
   try {
-    // Upsert all records to Supabase
+    localStorage.setItem('wardrobe-collection', JSON.stringify(collection));
+    const row = {
+      brand: p.brand, name: p.name, line: p.line,
+      price: p.price, vendor: p.vendor, date: p.date,
+      shelf: p.shelf, wear: p.wear, profile: p.profile,
+      smells: p.smells, tracking: p.tracking, dup: p.dup,
+      ref: p.ref || '', image: p.image || '',
+    };
+    if (p._dbid) {
+      // Update existing record
+      const { error } = await db.from('perfumes').update(row).eq('id', p._dbid);
+      if (error) throw error;
+    } else {
+      // Insert new record and store the returned id
+      const { data, error } = await db.from('perfumes').insert(row).select();
+      if (error) throw error;
+      if (data && data[0]) collection[idx]._dbid = data[0].id;
+    }
+    showSyncStatus('✓ Saved');
+  } catch(e) {
+    showSyncStatus('⚠ Saved locally only');
+  }
+}
+
+// Save all (used only for bulk import)
+async function saveAll() {
+  try { localStorage.setItem('wardrobe-collection', JSON.stringify(collection)); } catch {}
+  try {
     const rows = collection.map(p => ({
       id: p._dbid || undefined,
       brand: p.brand, name: p.name, line: p.line,
       price: p.price, vendor: p.vendor, date: p.date,
       shelf: p.shelf, wear: p.wear, profile: p.profile,
       smells: p.smells, tracking: p.tracking, dup: p.dup,
-      ref: p.ref, image: p.image || '',
+      ref: p.ref || '', image: p.image || '',
     }));
-    const { error } = await db.from('perfumes').upsert(rows, { onConflict: 'id' });
+    const { data, error } = await db.from('perfumes').upsert(rows, { onConflict: 'id' }).select();
     if (error) throw error;
-    showSyncStatus('✓ Saved');
+    // Store returned ids
+    if (data) data.forEach((row, i) => { if (collection[i]) collection[i]._dbid = row.id; });
+    showSyncStatus('✓ All saved');
   } catch(e) {
     showSyncStatus('⚠ Saved locally only');
   }
@@ -1213,7 +1246,7 @@ function clearForm() {
   document.getElementById('fWear').value = 'Easy reach';
 }
 
-function savePerfume() {
+async function savePerfume() {
   const brand = document.getElementById('fBrand').value.trim();
   const name = document.getElementById('fName').value.trim();
   if (!brand || !name) { showToast('Brand and Name are required'); return; }
@@ -1235,12 +1268,13 @@ function savePerfume() {
   };
   if (editingIndex >= 0) {
     collection[editingIndex] = entry;
+    await saveOne(editingIndex);
     showToast('Perfume updated ✓');
   } else {
     collection.unshift(entry);
+    await saveOne(0);
     showToast('Perfume added to wardrobe ✓');
   }
-  saveData();
   closeModal('addModal');
   render();
 }
@@ -1269,8 +1303,9 @@ async function autoFetchImage(idx) {
 
     if (img && img.length > 5) {
       collection[idx].image = img;
-      saveData();
+      await saveOne(idx);
       openDetail(idx);
+      render();
       showToast('Image found ✓');
     } else {
       // Fallback: open Google Images for manual selection
@@ -1287,19 +1322,21 @@ function uploadImage(event, idx) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     collection[idx].image = e.target.result;
-    saveData();
+    await saveOne(idx);
     openDetail(idx);
+    render();
     showToast('Photo saved ✓');
   };
   reader.readAsDataURL(file);
 }
 
-function removeImage(idx) {
+async function removeImage(idx) {
   collection[idx].image = '';
-  saveData();
+  await saveOne(idx);
   openDetail(idx);
+  render();
   showToast('Image removed');
 }
 
@@ -1309,7 +1346,7 @@ function deleteConfirm(idx) {
     const dbid = p._dbid;
     collection.splice(idx, 1);
     deleteFromDB(dbid);
-    saveData();
+    try { localStorage.setItem('wardrobe-collection', JSON.stringify(collection)); } catch {}
     render();
     showToast('Removed from wardrobe');
   }
@@ -1556,26 +1593,16 @@ async function doImport() {
     closeModal('importModal');
     resetImport();
     render();
-    // Save all to Supabase
     showSyncStatus('Uploading to cloud…');
-    const rows = collection.map(p => ({
-      brand: p.brand, name: p.name, line: p.line,
-      price: p.price, vendor: p.vendor, date: p.date,
-      shelf: p.shelf, wear: p.wear, profile: p.profile,
-      smells: p.smells, tracking: p.tracking, dup: p.dup,
-      ref: p.ref || '', image: p.image || '',
-    }));
     try {
       if (mode === 'replace') {
         await db.from('perfumes').delete().neq('id', '00000000-0000-0000-0000-000000000000');
       }
-      const { error } = await db.from('perfumes').insert(rows);
-      if (error) throw error;
+      await saveAll();
       showSyncStatus('✓ Uploaded to cloud');
     } catch(e) {
       showSyncStatus('⚠ Saved locally only');
     }
-    try { localStorage.setItem('wardrobe-collection', JSON.stringify(collection)); } catch {}
     render();
     showToast(`✓ Imported ${imported.length} perfumes!`);
   } catch(err) {
