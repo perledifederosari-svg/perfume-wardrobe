@@ -213,6 +213,9 @@ main { padding: 0; background: #F5C8D8; }
   transition: background 0.2s, transform 0.15s;
   position: relative;
   border-bottom: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
 }
 .perf-card:hover {
   background: #FFF5F7;
@@ -1114,7 +1117,7 @@ function renderGrid(items) {
     const wearClass = p.wear === 'Easy reach' ? 'wear-easy' : 'wear-main';
     const wearShort = p.wear === 'Easy reach' ? 'Easy Reach' : 'Main Character';
     const imageHtml = p.image
-      ? `<div class="card-swatch"><img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\"card-swatch-circle\" style=\"background:${swatchGradient(p.shelf)}\"></div>'"></div>`
+      ? `<div class="card-swatch"><img src="${p.image}" alt="${p.name}" style="height:110px;max-width:100%;object-fit:contain;" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'card-swatch-circle',style:'background:${swatchGradient(p.shelf)};width:50px;height:50px;border-radius:50%'}))"></div>`
       : `<div class="card-swatch"><div class="card-swatch-circle" style="background:${swatchGradient(p.shelf)}"></div></div>`;
     return `
     <div class="perf-card" onclick="openDetail(${idx})">
