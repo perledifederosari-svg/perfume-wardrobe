@@ -661,6 +661,270 @@ main { padding: 0; background: #F5C8D8; }
   .list-shelf, .list-wear, .list-date { display: none; }
   .detail-grid { grid-template-columns: 1fr; }
 }
+
+/* ── TABS ──────────────────────────────────────────────────── */
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #9A6070;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+}
+.tab-btn:hover { color: var(--gold); }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); background: rgba(201,150,58,0.06); }
+
+/* ── SCENT LAB ─────────────────────────────────────────────── */
+.lab-container { padding: 0; }
+
+.lab-hero {
+  background: linear-gradient(135deg, #2A0A14 0%, #1A0A12 100%);
+  padding: 36px 32px 28px;
+  border-bottom: 1px solid rgba(201,150,58,0.2);
+  text-align: center;
+}
+.lab-hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #FAE8EE;
+  margin-bottom: 6px;
+}
+.lab-hero-title em { font-style: italic; color: var(--gold); }
+.lab-hero-sub { font-size: 0.8rem; color: #9A6070; letter-spacing: 0.1em; }
+
+.lab-section { padding: 28px 32px; border-bottom: 1px solid rgba(201,150,58,0.1); background: #FFFFFF; }
+.lab-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  color: #2A0A14;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* MOOD GRID */
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.mood-btn {
+  background: #FDF5F7;
+  border: 2px solid transparent;
+  padding: 12px 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+.mood-btn:hover { border-color: var(--gold); background: #FFF8F0; }
+.mood-btn.selected { border-color: var(--gold); background: #FFF3E8; }
+.mood-emoji { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+.mood-name { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: #2A0A14; font-weight: 500; }
+
+/* DICE */
+.dice-btn {
+  background: var(--gold);
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dice-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+.dice-icon { font-size: 1.2rem; animation: none; }
+.dice-btn:active .dice-icon { animation: spin 0.3s; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* BLEND RESULT */
+.blend-result {
+  display: none;
+  margin-top: 24px;
+}
+.blend-result.visible { display: block; }
+
+.blend-card {
+  background: linear-gradient(135deg, #2A0A14, #1A0A12);
+  border: 1px solid rgba(201,150,58,0.3);
+  padding: 28px;
+  margin-bottom: 16px;
+}
+
+.blend-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  color: var(--gold);
+  font-style: italic;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.blend-perfumes {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.blend-perfume {
+  background: rgba(255,255,255,0.05);
+  padding: 14px 16px;
+  border-left: 3px solid var(--gold);
+}
+
+.blend-role {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9A6070;
+  margin-bottom: 4px;
+}
+
+.blend-perf-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: #FAE8EE;
+  margin-bottom: 2px;
+}
+
+.blend-perf-brand {
+  font-size: 0.7rem;
+  color: #9A6070;
+  letter-spacing: 0.1em;
+}
+
+.blend-plus {
+  font-size: 1.5rem;
+  color: var(--gold);
+  text-align: center;
+  font-weight: 300;
+}
+
+.blend-description {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: #E8D0D8;
+  line-height: 1.7;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 0 16px;
+}
+
+.blend-mood-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9A6070;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.color-palette {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.color-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.color-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.1);
+}
+
+.color-name {
+  font-size: 0.6rem;
+  color: #9A6070;
+  letter-spacing: 0.05em;
+  text-align: center;
+  max-width: 48px;
+}
+
+.blend-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-save-blend {
+  background: none;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 10px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-save-blend:hover { background: var(--gold); color: #fff; }
+
+/* SAVED BLENDS */
+.saved-blend-item {
+  background: #FDF5F7;
+  border-left: 3px solid var(--gold);
+  padding: 16px 18px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.saved-blend-item:hover { background: #FFF0F5; }
+.saved-blend-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #2A0A14; }
+.saved-blend-sub { font-size: 0.72rem; color: #9A6070; margin-top: 2px; }
+.saved-blend-mood { font-size: 0.65rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* AI LOADING */
+.lab-loading {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: #9A6070;
+  font-size: 0.82rem;
+}
+.lab-loading.visible { display: flex; }
+
+@media (max-width: 700px) {
+  .lab-section { padding: 20px 16px; }
+  .mood-grid { grid-template-columns: repeat(3, 1fr); }
+  .blend-perfumes { grid-template-columns: 1fr; }
+  .blend-plus { display: none; }
+  .lab-hero { padding: 24px 16px; }
+}
+
 </style>
 </head>
 <body>
@@ -693,6 +957,13 @@ main { padding: 0; background: #F5C8D8; }
   </div>
 </nav>
 
+<!-- TAB BAR -->
+<div id="tabBar" style="display:flex;background:#2A0A14;border-bottom:2px solid rgba(201,150,58,0.3);">
+  <button class="tab-btn active" id="tabWardrobe" onclick="switchTab('wardrobe')">👗 My Wardrobe</button>
+  <button class="tab-btn" id="tabLab" onclick="switchTab('lab')">🧪 Scent Lab</button>
+</div>
+
+<div id="wardrobeTab">
 <div class="filters-bar">
   <div class="search-wrap">
     <span class="search-icon">⌕</span>
@@ -742,6 +1013,96 @@ main { padding: 0; background: #F5C8D8; }
     <div id="listRows"></div>
   </div>
 </main>
+</div><!-- /wardrobeTab -->
+
+<!-- SCENT LAB TAB -->
+<div id="labTab" style="display:none;">
+<div class="lab-container">
+
+  <!-- HERO -->
+  <div class="lab-hero">
+    <h2 class="lab-hero-title">The <em>Scent Lab</em></h2>
+    <p class="lab-hero-sub">Discover your perfect blend · Match your mood · Dress your energy</p>
+  </div>
+
+  <!-- MOOD SELECTOR -->
+  <div class="lab-section">
+    <h3 class="lab-section-title">✨ How are you feeling today?</h3>
+    <div class="mood-grid">
+      <button class="mood-btn" data-mood="Calm" onclick="selectMood(this)"><span class="mood-emoji">🕊️</span><span class="mood-name">Calm</span></button>
+      <button class="mood-btn" data-mood="Peace" onclick="selectMood(this)"><span class="mood-emoji">🌿</span><span class="mood-name">Peace</span></button>
+      <button class="mood-btn" data-mood="Anti-Anxiety" onclick="selectMood(this)"><span class="mood-emoji">🫧</span><span class="mood-name">Anti-Anxiety</span></button>
+      <button class="mood-btn" data-mood="Relaxed" onclick="selectMood(this)"><span class="mood-emoji">☁️</span><span class="mood-name">Relaxed</span></button>
+      <button class="mood-btn" data-mood="Spiritual" onclick="selectMood(this)"><span class="mood-emoji">🙏</span><span class="mood-name">Spiritual</span></button>
+      <button class="mood-btn" data-mood="Healing" onclick="selectMood(this)"><span class="mood-emoji">🌸</span><span class="mood-name">Healing</span></button>
+      <button class="mood-btn" data-mood="Cozy" onclick="selectMood(this)"><span class="mood-emoji">🕯️</span><span class="mood-name">Cozy / Safe</span></button>
+      <button class="mood-btn" data-mood="Energy" onclick="selectMood(this)"><span class="mood-emoji">⚡</span><span class="mood-name">Energy</span></button>
+      <button class="mood-btn" data-mood="Mood Lifting" onclick="selectMood(this)"><span class="mood-emoji">🌈</span><span class="mood-name">Mood Lifting</span></button>
+      <button class="mood-btn" data-mood="Anti-Low Mood" onclick="selectMood(this)"><span class="mood-emoji">☀️</span><span class="mood-name">Anti-Low Mood</span></button>
+      <button class="mood-btn" data-mood="Joy" onclick="selectMood(this)"><span class="mood-emoji">🎉</span><span class="mood-name">Joy</span></button>
+      <button class="mood-btn" data-mood="Fun" onclick="selectMood(this)"><span class="mood-emoji">🎈</span><span class="mood-name">Fun</span></button>
+      <button class="mood-btn" data-mood="Playful" onclick="selectMood(this)"><span class="mood-emoji">🦋</span><span class="mood-name">Playful</span></button>
+      <button class="mood-btn" data-mood="Youthful" onclick="selectMood(this)"><span class="mood-emoji">🍭</span><span class="mood-name">Youthful</span></button>
+      <button class="mood-btn" data-mood="Celebratory" onclick="selectMood(this)"><span class="mood-emoji">🥂</span><span class="mood-name">Celebratory</span></button>
+      <button class="mood-btn" data-mood="Intentional" onclick="selectMood(this)"><span class="mood-emoji">🎯</span><span class="mood-name">Intentional</span></button>
+      <button class="mood-btn" data-mood="Powerful" onclick="selectMood(this)"><span class="mood-emoji">👑</span><span class="mood-name">Powerful</span></button>
+      <button class="mood-btn" data-mood="Leadership" onclick="selectMood(this)"><span class="mood-emoji">💼</span><span class="mood-name">Leadership</span></button>
+      <button class="mood-btn" data-mood="Boss Lady" onclick="selectMood(this)"><span class="mood-emoji">💋</span><span class="mood-name">Boss Lady</span></button>
+      <button class="mood-btn" data-mood="Creative" onclick="selectMood(this)"><span class="mood-emoji">🎨</span><span class="mood-name">Creative</span></button>
+      <button class="mood-btn" data-mood="Angelic" onclick="selectMood(this)"><span class="mood-emoji">👼</span><span class="mood-name">Angelic</span></button>
+      <button class="mood-btn" data-mood="Sensual" onclick="selectMood(this)"><span class="mood-emoji">🌹</span><span class="mood-name">Sensual</span></button>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px;">
+      <button class="dice-btn" onclick="generateBlend()">
+        <span class="dice-icon">🎲</span> Generate My Blend
+      </button>
+      <span id="selectedMoodLabel" style="font-size:0.8rem;color:#9A6070;font-style:italic;"></span>
+    </div>
+
+    <div class="lab-loading" id="labLoading">
+      <span class="loading-dots"><span></span><span></span><span></span></span>
+      <span>Creating your signature blend…</span>
+    </div>
+  </div>
+
+  <!-- BLEND RESULT -->
+  <div class="lab-section blend-result" id="blendResult">
+    <div class="blend-card">
+      <div class="blend-title" id="blendName"></div>
+      <div class="blend-perfumes">
+        <div class="blend-perfume">
+          <div class="blend-role">Base Layer</div>
+          <div class="blend-perf-name" id="basePerf"></div>
+          <div class="blend-perf-brand" id="baseBrand"></div>
+          <div style="font-size:0.72rem;color:#9A6070;margin-top:4px;font-style:italic;" id="baseProfile"></div>
+        </div>
+        <div class="blend-plus">+</div>
+        <div class="blend-perfume">
+          <div class="blend-role">Top Layer</div>
+          <div class="blend-perf-name" id="topPerf"></div>
+          <div class="blend-perf-brand" id="topBrand"></div>
+          <div style="font-size:0.72rem;color:#9A6070;margin-top:4px;font-style:italic;" id="topProfile"></div>
+        </div>
+      </div>
+      <div class="blend-description" id="blendDescription"></div>
+      <div class="blend-mood-label">Outfit Color Palette</div>
+      <div class="color-palette" id="colorPalette"></div>
+      <div class="blend-actions">
+        <button class="btn-save-blend" onclick="saveBlend()">♡ Save Blend</button>
+        <button class="btn-save-blend" onclick="generateBlend()">🎲 Try Another</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVED BLENDS -->
+  <div class="lab-section" id="savedBlendsSection" style="display:none;">
+    <h3 class="lab-section-title">🌸 My Saved Blends</h3>
+    <div id="savedBlendsList"></div>
+  </div>
+
+</div>
+</div>
 
 <!-- ADD / EDIT MODAL -->
 <div class="modal-overlay" id="addModal">
@@ -1672,6 +2033,267 @@ function exportCSV() {
 
 // ── INIT ──────────────────────────────────────────────────────
 loadData();
+
+// ── SCENT LAB ─────────────────────────────────────────────────
+
+// Tab switching
+function switchTab(tab) {
+  document.getElementById('wardrobeTab').style.display = tab === 'wardrobe' ? 'block' : 'none';
+  document.getElementById('labTab').style.display = tab === 'lab' ? 'block' : 'none';
+  document.getElementById('tabWardrobe').classList.toggle('active', tab === 'wardrobe');
+  document.getElementById('tabLab').classList.toggle('active', tab === 'lab');
+}
+
+// Mood → scent families mapping
+const MOOD_FAMILIES = {
+  'Calm':         ['Vanilla Gourmand', 'Milky Gourmand', 'Nutty Gourmand'],
+  'Peace':        ['Coffee / Chocolate', 'Vanilla Gourmand', 'Milky Gourmand'],
+  'Anti-Anxiety': ['Vanilla Gourmand', 'Milky Gourmand', 'Marshmallow Gourmand'],
+  'Relaxed':      ['Nutty Gourmand', 'Coffee / Chocolate', 'Vanilla Gourmand'],
+  'Spiritual':    ['Milky Gourmand', 'Vanilla Gourmand', 'Sweet Oriental'],
+  'Healing':      ['Milky Gourmand', 'Vanilla Gourmand', 'Marshmallow Gourmand'],
+  'Cozy':         ['Coffee / Chocolate', 'Vanilla Gourmand', 'Nutty Gourmand', 'Bakery Gourmand'],
+  'Energy':       ['Light Floral / Fruity', 'Fruity Gourmand', 'Candy Gourmand'],
+  'Mood Lifting': ['Light Floral / Fruity', 'Fruity Gourmand', 'Marshmallow Gourmand'],
+  'Anti-Low Mood':['Light Floral / Fruity', 'Candy Gourmand', 'Fruity Gourmand'],
+  'Joy':          ['Marshmallow Gourmand', 'Candy Gourmand', 'Light Floral / Fruity'],
+  'Fun':          ['Candy Gourmand', 'Fruity Gourmand', 'Light Floral / Fruity'],
+  'Playful':      ['Candy Gourmand', 'Marshmallow Gourmand', 'Light Floral / Fruity'],
+  'Youthful':     ['Bakery Gourmand', 'Candy Gourmand', 'Fruity Gourmand'],
+  'Celebratory':  ['Fruity Gourmand', 'Sweet Oriental', 'Light Floral / Fruity'],
+  'Intentional':  ['Oriental / Amber / Spicy', 'Sweet Oriental', 'Coffee / Chocolate'],
+  'Powerful':     ['Oriental / Amber / Spicy', 'Sweet Oriental'],
+  'Leadership':   ['Oriental / Amber / Spicy', 'Sweet Oriental'],
+  'Boss Lady':    ['Oriental / Amber / Spicy', 'Sweet Oriental'],
+  'Creative':     ['Coffee / Chocolate', 'Oriental / Amber / Spicy', 'Sweet Oriental'],
+  'Angelic':      ['Marshmallow Gourmand', 'Milky Gourmand', 'Vanilla Gourmand'],
+  'Sensual':      ['Sweet Oriental', 'Oriental / Amber / Spicy', 'Light Floral / Fruity'],
+};
+
+// Mood → outfit colors
+const MOOD_COLORS = {
+  'Calm':         [{name:'Soft White', hex:'#F8F4F0'},{name:'Ivory', hex:'#FFFFF0'},{name:'Blush', hex:'#F4C2C2'},{name:'Dove Grey', hex:'#B2B2B2'},{name:'Sage', hex:'#BCB88A'}],
+  'Peace':        [{name:'Soft White', hex:'#F8F4F0'},{name:'Blush', hex:'#F4C2C2'},{name:'Dove Grey', hex:'#B2B2B2'},{name:'Sage', hex:'#BCB88A'},{name:'Cream', hex:'#FFFDD0'}],
+  'Anti-Anxiety': [{name:'Lavender', hex:'#E6E6FA'},{name:'Soft Blue', hex:'#AEC6CF'},{name:'Mint', hex:'#98FF98'},{name:'Pale Pink', hex:'#FFD1DC'},{name:'Cream', hex:'#FFFDD0'}],
+  'Relaxed':      [{name:'Camel', hex:'#C19A6B'},{name:'Warm Beige', hex:'#F5F5DC'},{name:'Chocolate', hex:'#7B3F00'},{name:'Rust', hex:'#B7410E'},{name:'Oatmeal', hex:'#E8DCC8'}],
+  'Spiritual':    [{name:'White', hex:'#FFFFFF'},{name:'Silver', hex:'#C0C0C0'},{name:'Pearl', hex:'#EAE0C8'},{name:'Soft Gold', hex:'#FFD700'},{name:'Ethereal Blue', hex:'#B0C4DE'}],
+  'Healing':      [{name:'Lavender', hex:'#E6E6FA'},{name:'Soft Blue', hex:'#AEC6CF'},{name:'Mint', hex:'#98FF98'},{name:'Pale Pink', hex:'#FFD1DC'},{name:'Cream', hex:'#FFFDD0'}],
+  'Cozy':         [{name:'Camel', hex:'#C19A6B'},{name:'Warm Beige', hex:'#F5F5DC'},{name:'Chocolate', hex:'#7B3F00'},{name:'Rust', hex:'#B7410E'},{name:'Oatmeal', hex:'#E8DCC8'}],
+  'Energy':       [{name:'Coral', hex:'#FF7F7F'},{name:'Bright Yellow', hex:'#FFD700'},{name:'Tangerine', hex:'#F28500'},{name:'Electric Blue', hex:'#7DF9FF'},{name:'Lime', hex:'#32CD32'}],
+  'Mood Lifting': [{name:'Coral', hex:'#FF7F7F'},{name:'Bright Yellow', hex:'#FFD700'},{name:'Tangerine', hex:'#F28500'},{name:'Electric Blue', hex:'#7DF9FF'},{name:'Lime', hex:'#32CD32'}],
+  'Anti-Low Mood':[{name:'Hot Pink', hex:'#FF69B4'},{name:'Sunshine Yellow', hex:'#FFD700'},{name:'Coral', hex:'#FF7F7F'},{name:'Turquoise', hex:'#40E0D0'},{name:'Orange', hex:'#FFA500'}],
+  'Joy':          [{name:'Hot Pink', hex:'#FF69B4'},{name:'Sunshine Yellow', hex:'#FFD700'},{name:'Red', hex:'#FF0000'},{name:'Turquoise', hex:'#40E0D0'},{name:'Orange', hex:'#FFA500'}],
+  'Fun':          [{name:'Hot Pink', hex:'#FF69B4'},{name:'Sunshine Yellow', hex:'#FFD700'},{name:'Red', hex:'#FF0000'},{name:'Turquoise', hex:'#40E0D0'},{name:'Orange', hex:'#FFA500'}],
+  'Playful':      [{name:'Baby Blue', hex:'#89CFF0'},{name:'Lilac', hex:'#C8A2C8'},{name:'Peach', hex:'#FFCBA4'},{name:'Mint', hex:'#98FF98'},{name:'Soft Yellow', hex:'#FDFD96'}],
+  'Youthful':     [{name:'Baby Blue', hex:'#89CFF0'},{name:'Lilac', hex:'#C8A2C8'},{name:'Peach', hex:'#FFCBA4'},{name:'Mint', hex:'#98FF98'},{name:'Soft Yellow', hex:'#FDFD96'}],
+  'Celebratory':  [{name:'Gold', hex:'#FFD700'},{name:'Champagne', hex:'#F7E7CE'},{name:'Emerald', hex:'#50C878'},{name:'Royal Blue', hex:'#4169E1'},{name:'Fuchsia', hex:'#FF00FF'}],
+  'Intentional':  [{name:'Burnt Orange', hex:'#CC5500'},{name:'Mustard', hex:'#FFDB58'},{name:'Deep Teal', hex:'#008080'},{name:'Terracotta', hex:'#E2725B'},{name:'Plum', hex:'#8E4585'}],
+  'Powerful':     [{name:'Black', hex:'#000000'},{name:'Deep Burgundy', hex:'#800020'},{name:'Forest Green', hex:'#228B22'},{name:'Navy', hex:'#000080'},{name:'Camel', hex:'#C19A6B'}],
+  'Leadership':   [{name:'Black', hex:'#000000'},{name:'Deep Burgundy', hex:'#800020'},{name:'Forest Green', hex:'#228B22'},{name:'Navy', hex:'#000080'},{name:'Camel', hex:'#C19A6B'}],
+  'Boss Lady':    [{name:'Black', hex:'#000000'},{name:'Deep Burgundy', hex:'#800020'},{name:'Forest Green', hex:'#228B22'},{name:'Navy', hex:'#000080'},{name:'Camel', hex:'#C19A6B'}],
+  'Creative':     [{name:'Burnt Orange', hex:'#CC5500'},{name:'Mustard', hex:'#FFDB58'},{name:'Deep Teal', hex:'#008080'},{name:'Terracotta', hex:'#E2725B'},{name:'Plum', hex:'#8E4585'}],
+  'Angelic':      [{name:'White', hex:'#FFFFFF'},{name:'Silver', hex:'#C0C0C0'},{name:'Pearl', hex:'#EAE0C8'},{name:'Soft Gold', hex:'#FFD700'},{name:'Ethereal Blue', hex:'#B0C4DE'}],
+  'Sensual':      [{name:'Deep Rose', hex:'#B03060'},{name:'Mauve', hex:'#E0B0FF'},{name:'Burgundy', hex:'#800020'},{name:'Champagne', hex:'#F7E7CE'},{name:'Deep Plum', hex:'#8E4585'}],
+};
+
+// Layer harmony rules — which families work as base vs top
+const BASE_FAMILIES = ['Vanilla Gourmand','Coffee / Chocolate','Oriental / Amber / Spicy','Sweet Oriental','Milky Gourmand','Nutty Gourmand'];
+const TOP_FAMILIES  = ['Light Floral / Fruity','Marshmallow Gourmand','Candy Gourmand','Fruity Gourmand','Bakery Gourmand'];
+
+// Harmony pairs — which combinations work
+const HARMONY = {
+  'Vanilla Gourmand':      ['Marshmallow Gourmand','Light Floral / Fruity','Coffee / Chocolate','Milky Gourmand','Fruity Gourmand','Candy Gourmand'],
+  'Coffee / Chocolate':    ['Vanilla Gourmand','Marshmallow Gourmand','Nutty Gourmand','Bakery Gourmand'],
+  'Oriental / Amber / Spicy': ['Light Floral / Fruity','Vanilla Gourmand','Sweet Oriental','Fruity Gourmand'],
+  'Sweet Oriental':        ['Light Floral / Fruity','Vanilla Gourmand','Fruity Gourmand','Marshmallow Gourmand'],
+  'Milky Gourmand':        ['Vanilla Gourmand','Marshmallow Gourmand','Light Floral / Fruity','Fruity Gourmand'],
+  'Nutty Gourmand':        ['Vanilla Gourmand','Marshmallow Gourmand','Coffee / Chocolate','Bakery Gourmand'],
+  'Marshmallow Gourmand':  ['Vanilla Gourmand','Light Floral / Fruity','Milky Gourmand','Fruity Gourmand'],
+  'Light Floral / Fruity': ['Vanilla Gourmand','Sweet Oriental','Milky Gourmand','Marshmallow Gourmand'],
+  'Candy Gourmand':        ['Vanilla Gourmand','Marshmallow Gourmand','Light Floral / Fruity','Fruity Gourmand'],
+  'Fruity Gourmand':       ['Vanilla Gourmand','Sweet Oriental','Milky Gourmand','Marshmallow Gourmand'],
+  'Bakery Gourmand':       ['Vanilla Gourmand','Coffee / Chocolate','Nutty Gourmand','Marshmallow Gourmand'],
+};
+
+let selectedMood = null;
+let currentBlend = null;
+let savedBlends = [];
+
+function selectMood(btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMood = btn.dataset.mood;
+  document.getElementById('selectedMoodLabel').textContent = `Mood: ${selectedMood}`;
+}
+
+function getRandomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function getPerfumesByFamily(family) {
+  return collection.filter(p => p.shelf && p.shelf.trim() === family.trim() && p.name && p.brand);
+}
+
+async function generateBlend() {
+  if (!selectedMood) {
+    showToast('Please select a mood first!'); return;
+  }
+  if (!collection.length) {
+    showToast('Import your collection first!'); return;
+  }
+
+  document.getElementById('labLoading').classList.add('visible');
+  document.getElementById('blendResult').classList.remove('visible');
+
+  const families = MOOD_FAMILIES[selectedMood] || [];
+
+  // Pick base perfume
+  let basePerfume = null, topPerfume = null;
+  let attempts = 0;
+
+  while (attempts < 50 && (!basePerfume || !topPerfume)) {
+    const baseFamily = getRandomFrom(families.filter(f => BASE_FAMILIES.includes(f)) || families);
+    const compatibleTop = HARMONY[baseFamily] || [];
+    const topFamily = getRandomFrom(compatibleTop.filter(f => families.includes(f) || TOP_FAMILIES.includes(f)));
+
+    const baseCandidates = getPerfumesByFamily(baseFamily);
+    const topCandidates = getPerfumesByFamily(topFamily);
+
+    if (baseCandidates.length && topCandidates.length) {
+      basePerfume = getRandomFrom(baseCandidates);
+      topPerfume = getRandomFrom(topCandidates.filter(p => p !== basePerfume));
+      if (!topPerfume && topCandidates.length > 1) topPerfume = getRandomFrom(topCandidates);
+    }
+    attempts++;
+  }
+
+  // Fallback — just pick two from any mood family
+  if (!basePerfume || !topPerfume) {
+    const allCandidates = families.flatMap(f => getPerfumesByFamily(f));
+    if (allCandidates.length >= 2) {
+      basePerfume = allCandidates[0];
+      topPerfume = allCandidates[1];
+    }
+  }
+
+  if (!basePerfume || !topPerfume) {
+    document.getElementById('labLoading').classList.remove('visible');
+    showToast('Not enough perfumes in this mood category yet — add more data!');
+    return;
+  }
+
+  // Get AI description
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: `You are a master perfumer and mood coach. Given two perfumes layered together and a mood, write:
+1. A poetic name for this blend (3-5 words, evocative)
+2. A 2-sentence description of what this combination smells like and why it suits the mood
+
+Respond in JSON only: {"name": "...", "description": "..."}`,
+        messages: [{
+          role: 'user',
+          content: `Base layer: ${basePerfume.brand} ${basePerfume.name} (${basePerfume.profile || basePerfume.shelf})
+Top layer: ${topPerfume.brand} ${topPerfume.name} (${topPerfume.profile || topPerfume.shelf})
+Mood: ${selectedMood}`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.map(c => c.text || '').join('') || '{}';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    currentBlend = {
+      name: parsed.name || `${basePerfume.name} × ${topPerfume.name}`,
+      description: parsed.description || '',
+      base: basePerfume,
+      top: topPerfume,
+      mood: selectedMood,
+      colors: MOOD_COLORS[selectedMood] || [],
+    };
+  } catch(e) {
+    currentBlend = {
+      name: `${basePerfume.name} × ${topPerfume.name}`,
+      description: `A ${selectedMood.toLowerCase()} blend that layers the ${basePerfume.shelf} warmth of ${basePerfume.name} with the ${topPerfume.shelf} brightness of ${topPerfume.name}.`,
+      base: basePerfume,
+      top: topPerfume,
+      mood: selectedMood,
+      colors: MOOD_COLORS[selectedMood] || [],
+    };
+  }
+
+  displayBlend(currentBlend);
+  document.getElementById('labLoading').classList.remove('visible');
+}
+
+function displayBlend(blend) {
+  document.getElementById('blendName').textContent = blend.name;
+  document.getElementById('basePerf').textContent = blend.base.name;
+  document.getElementById('baseBrand').textContent = blend.base.brand;
+  document.getElementById('baseProfile').textContent = blend.base.profile || blend.base.shelf || '';
+  document.getElementById('topPerf').textContent = blend.top.name;
+  document.getElementById('topBrand').textContent = blend.top.brand;
+  document.getElementById('topProfile').textContent = blend.top.profile || blend.top.shelf || '';
+  document.getElementById('blendDescription').textContent = blend.description;
+
+  const palette = document.getElementById('colorPalette');
+  palette.innerHTML = (blend.colors || []).map(c => `
+    <div class="color-swatch">
+      <div class="color-circle" style="background:${c.hex};"></div>
+      <div class="color-name">${c.name}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('blendResult').classList.add('visible');
+}
+
+async function saveBlend() {
+  if (!currentBlend) return;
+  savedBlends.unshift({...currentBlend, savedAt: new Date().toLocaleDateString()});
+  try { await window.storage.set('wardrobe-blends', JSON.stringify(savedBlends)); } catch {}
+  try { localStorage.setItem('wardrobe-blends', JSON.stringify(savedBlends)); } catch {}
+  renderSavedBlends();
+  showToast('Blend saved ✓');
+}
+
+function renderSavedBlends() {
+  if (!savedBlends.length) {
+    document.getElementById('savedBlendsSection').style.display = 'none';
+    return;
+  }
+  document.getElementById('savedBlendsSection').style.display = 'block';
+  document.getElementById('savedBlendsList').innerHTML = savedBlends.map((b, i) => `
+    <div class="saved-blend-item" onclick="displayBlend(savedBlends[${i}])">
+      <div>
+        <div class="saved-blend-name">${b.name}</div>
+        <div class="saved-blend-sub">${b.base.name} × ${b.top.name}</div>
+      </div>
+      <div>
+        <div class="saved-blend-mood">${b.mood}</div>
+        <div style="font-size:0.65rem;color:#9A6070;margin-top:2px;">${b.savedAt}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadBlends() {
+  try {
+    const r = await window.storage.get('wardrobe-blends');
+    if (r) { savedBlends = JSON.parse(r.value); renderSavedBlends(); return; }
+  } catch {}
+  try {
+    const local = localStorage.getItem('wardrobe-blends');
+    if (local) { savedBlends = JSON.parse(local); renderSavedBlends(); }
+  } catch {}
+}
+
+loadBlends();
+
 </script>
 </div><!-- /app-frame -->
 <script>
